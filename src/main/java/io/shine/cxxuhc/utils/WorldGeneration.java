@@ -43,14 +43,14 @@ public class WorldGeneration {
 						setSpwanPlat("uhcworld");
 						WorldBorder wb = w.getWorldBorder();
 						wb.setCenter(0, 0);
-						wb.setSize(3000);
-						wb.setDamageAmount(2.0);
+						wb.setSize(2000);
+						wb.setDamageAmount(0.5);
 						wb.setDamageBuffer(5.0);
 						wb.setWarningDistance(20);
 						WorldBorder nb = nw.getWorldBorder();
 						nb.setCenter(0, 0);
-						nb.setSize(3000);
-						nb.setDamageAmount(2.0);
+						nb.setSize(2000);
+						nb.setDamageAmount(0.5);
 						nb.setDamageBuffer(5.0);
 						nb.setWarningDistance(20);
 						t.get().cancel();

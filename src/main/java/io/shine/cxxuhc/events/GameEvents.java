@@ -1,5 +1,7 @@
 package io.shine.cxxuhc.events;
 
+import java.util.Random;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -65,7 +67,7 @@ public class GameEvents implements Listener {
 
 	@EventHandler
 	public void onPvP(EntityDamageByEntityEvent e) {
-		if(CXXUhc.INSTANCE.pvp == true) return;
+		if(HostGame.getPvP() == true) return;
 		if (e.getDamager() instanceof Player){
             if (e.getEntity() instanceof Player) {
                 e.setCancelled(true);
@@ -101,12 +103,20 @@ public class GameEvents implements Listener {
 
 	@EventHandler
 	public void onRespawn(PlayerRespawnEvent e) {
-		e.getPlayer().setGameMode(GameMode.SPECTATOR);
+		Player p = e.getPlayer();
+		p.setGameMode(GameMode.SPECTATOR);
+		if(p.getKiller() != null) {
+			p.teleport(p.getKiller());
+			return;
+		}else {
+			p.teleport(new Location(Bukkit.getWorld("uhcworld"), 0, 150, 0));
+			return;
+		}
 	}
 
 	@EventHandler
 	public void onStart(GameStartEvent e) {
-		CXXUhc.INSTANCE.setPvp(false);
+		HostGame.setPvP(false);
 		e.getWorld().setTime(0L);
 		e.getWorld().setGameRuleValue("naturalRegeneration", "false");
 		e.getWorld().setStorm(false);

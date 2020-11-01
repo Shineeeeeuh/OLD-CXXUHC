@@ -11,7 +11,7 @@ import io.shine.cxxuhc.enums.GameState;
 public class HostGame {
 	
 	private static ItemStack[] inv,armor;
-	private static boolean allowroad, allowlava, allownotchapple, nodamage;
+	private static boolean allowroad, allowlava, allownotchapple, nodamage, pvp;
 	private static double heal;
 	private static GameState state;
 	private static ArrayList<String> players;
@@ -32,6 +32,15 @@ public class HostGame {
 		pvpevent = 10;
 		wallevent = 60;
 		damageevent = 1;
+		pvp = false;
+	}
+	
+	public static void setPvP(boolean pvp) {
+		HostGame.pvp = pvp;
+	}
+	
+	public static boolean getPvP() {
+		return pvp;
 	}
 	
 	public static void setDamageEventTime(int damageevent) {

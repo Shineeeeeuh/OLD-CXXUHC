@@ -35,7 +35,6 @@ public class CXXUhc extends JavaPlugin{
 	public static ScoreboardManager sbm;
 	public static Scoreboard sb;
 	public static Objective lifesb;
-	public boolean pvp;
 	
 	@Override
 	public void onEnable() {
@@ -48,10 +47,6 @@ public class CXXUhc extends JavaPlugin{
 		registerCommands();
 	}
 	
-	public void setPvp(boolean pvp) {
-		this.pvp = pvp;
-	}
-	
 	public void initStockage() {
 		scoreboards = new HashMap<>();
 		editingheal = new ArrayList<>();
@@ -59,7 +54,6 @@ public class CXXUhc extends JavaPlugin{
 		lbtp = new ArrayList<>();
 		spawns = new HashMap<>();
 		editingtime = new ArrayList<>();
-		pvp = false;
 		sbm = getServer().getScoreboardManager();
 		sb = sbm.getNewScoreboard();
 		lifesb = sb.registerNewObjective("health", "health");

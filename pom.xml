@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.shine.cxxuhc</groupId>
   <artifactId>CXXUHC</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>${env.GITHUB_RUN_ID}-SNAPSHOT</version>
   <packaging>jar</packaging>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

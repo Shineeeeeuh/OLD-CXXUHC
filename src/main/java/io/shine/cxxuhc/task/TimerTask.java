@@ -84,8 +84,8 @@ public class TimerTask{
 
 	private static Location generateLocation() {
         Random r = new Random();
-        int x = r.nextInt(2000 / 2);
-        int z = r.nextInt(2000 / 2);
+        int x = r.nextInt(1000 / 2);
+        int z = r.nextInt(1000 / 2);
         if (r.nextBoolean()) {
             x *= -1;
         }

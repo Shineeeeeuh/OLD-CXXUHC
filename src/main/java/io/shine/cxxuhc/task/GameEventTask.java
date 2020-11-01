@@ -35,7 +35,7 @@ public class GameEventTask {
 					for(ScoreboardSign sb : CXXUhc.INSTANCE.scoreboards.values()) {
 						sb.setLine(6, "§cBordure: §aActiver");
 					}
-					BorderManager.moveWorldBorder(50, 50, 50, 1200);
+					BorderManager.moveWorldBorder();
 					this.cancel();
 				}
 				if(time == HostGame.getDamageEventTime()) {

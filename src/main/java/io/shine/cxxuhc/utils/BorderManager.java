@@ -7,7 +7,7 @@ public class BorderManager {
 	
 	public static void moveWorldBorder(){
 		WorldBorder wb = Bukkit.getWorld("uhcworld").getWorldBorder();
-		wb.setSize(100, 900);
+		wb.setSize(30, 1940);
 	}
 
 }

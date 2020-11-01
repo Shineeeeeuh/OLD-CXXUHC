@@ -1,0 +1,8 @@
+{
+  "files.autoGuessEncoding": true,
+  "files.encoding": "utf8",
+  "java.home": "C:\\Program Files\\AdoptOpenJDK\\jdk-11.0.7.10-hotspot",
+  "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx1G -Xms100m -Dfile.encoding=UTF-8",
+  "javac-linter.javac": "javac -DFile.encoding=UTF-8",
+  "java.configuration.updateBuildConfiguration": "interactive"
+}

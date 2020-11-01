@@ -1,0 +1,11 @@
+name: CXXUhc
+version: 1.0
+author: ShineLoliMC
+main: io.shine.cxxuhc.CXXUhc
+commands:
+    say:
+        description: Say
+    finish:
+        description: Finish
+    bug:
+        description: Report BUG

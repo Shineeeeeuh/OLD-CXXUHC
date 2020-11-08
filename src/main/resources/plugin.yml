@@ -9,3 +9,5 @@ commands:
         description: Finish
     bug:
         description: Report BUG
+    end:
+        description: Ends the current UHC

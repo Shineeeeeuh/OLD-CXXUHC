@@ -28,14 +28,14 @@ public class GameEventTask {
 					for(ScoreboardSign sb : CXXUhc.INSTANCE.scoreboards.values()) {
 						sb.setLine(5, "§cPVP: §aActiver");
 					}
-					CXXUhc.INSTANCE.setPvp(true);
+					HostGame.setPvP(true);
 				}
 				if(time == HostGame.getWallEventTime()) {
 					Bukkit.broadcastMessage("§9CXXUhc §7>> §eAttention ! §6§lLa map se rétrécie §e!");
 					for(ScoreboardSign sb : CXXUhc.INSTANCE.scoreboards.values()) {
 						sb.setLine(6, "§cBordure: §aActiver");
 					}
-					BorderManager.moveWorldBorder(50, 50, 15, 600);
+					BorderManager.moveWorldBorder();
 					this.cancel();
 				}
 				if(time == HostGame.getDamageEventTime()) {

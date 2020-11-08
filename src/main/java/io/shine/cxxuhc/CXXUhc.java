@@ -2,7 +2,9 @@ package io.shine.cxxuhc;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -36,12 +38,13 @@ public class CXXUhc extends JavaPlugin {
   public static ScoreboardManager sbm;
   public static Scoreboard sb;
   public static Objective lifesb;
+  public static HashSet<Chunk> chunkSet;
 
   @Override
   public void onEnable() {
     INSTANCE = this;
     HostGame.init();
-    WorldGeneration.generateMap();
+    chunkSet = WorldGeneration.generateMap();
     registerEvents();
     initStockage();
     registerGuis();

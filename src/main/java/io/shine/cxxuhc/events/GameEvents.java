@@ -84,26 +84,23 @@ public class GameEvents implements Listener {
   public void onDeath(PlayerDeathEvent e) {
     if (e.getEntityType() == EntityType.PLAYER) {
       if (HostGame.getState() == GameState.START) {
-        e.getEntity().spigot().respawn();
         HostGame.getPlayers().remove(e.getEntity().getName());
         updateSB();
-        if (e.getEntity().getLastDamageCause().getCause() == DamageCause.ENTITY_ATTACK) {
-          if (e.getEntity().getKiller() != null) {
-            String name = e.getEntity().getKiller().getName();
-            ScoreboardSign sb = CXXUhc.INSTANCE.scoreboards.get(name);
-            if (HostGame.getKSHashMap().containsKey(name)) {
-              sb.setLine(9, "§cKill(s): §7" + (HostGame.getKS(name) + 1));
-            } else {
-              sb.setLine(9, "§cKill(s): §71");
-            }
-            HostGame.addKS(name);
-          }
-        }
-        if (HostGame.getPlayers().size() == 1) {
-          Bukkit.getPluginManager()
-              .callEvent(new GameWinEvent(Bukkit.getWorld("uhcworld"), Bukkit.getPlayer(HostGame.getPlayers().get(0))));
-        }
-      }
+	      if (e.getEntity().getKiller() != null) {
+	        String name = e.getEntity().getKiller().getName();
+	        ScoreboardSign sb = CXXUhc.INSTANCE.scoreboards.get(name);
+	        if (HostGame.getKSHashMap().containsKey(name)) {
+	          sb.setLine(9, "§cKill(s): §7" + (HostGame.getKS(name) + 1));
+	        } else {
+	          sb.setLine(9, "§cKill(s): §71");
+	        }
+	        HostGame.addKS(name);
+	      }
+	    }
+	    if (HostGame.getPlayers().size() == 1) {
+	      Bukkit.getPluginManager()
+	          .callEvent(new GameWinEvent(Bukkit.getWorld("uhcworld"), Bukkit.getPlayer(HostGame.getPlayers().get(0))));
+	    }
     }
   }
 

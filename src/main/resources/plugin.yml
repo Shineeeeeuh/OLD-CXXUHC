@@ -1,6 +1,6 @@
 name: CXXUhc
 version: 1.0
-author: ShineLoliMC
+author: CXXUHC
 main: io.shine.cxxuhc.CXXUhc
 commands:
     say:
@@ -9,5 +9,7 @@ commands:
         description: Finish
     bug:
         description: Report BUG
-    end:
+    enduhc:
         description: Ends the current UHC
+    me:
+        description: Me

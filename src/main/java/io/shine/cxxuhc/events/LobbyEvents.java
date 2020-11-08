@@ -13,6 +13,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -147,5 +148,24 @@ public class LobbyEvents implements Listener {
 			}
 		}
 	}
+	
+	@EventHandler
+	public void onCommand(PlayerCommandPreprocessEvent e) {
+		switch(e.getMessage()) {
+		case "/minecraft:me":
+			e.setCancelled(true);
+			e.getPlayer().sendMessage("§cPsst... Cette commande est désactivé !");
+			return;
+		case "/tell":
+			e.setCancelled(true);
+			e.getPlayer().sendMessage("§cPsst... Cette commande est désactivé !");
+			return;
+		case "/minecraft:tell":
+			e.setCancelled(true);
+			e.getPlayer().sendMessage("§cPsst... Cette commande est désactivé !");
+			return;
+		}
+	}
+	
 
 }

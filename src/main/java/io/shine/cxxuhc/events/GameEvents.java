@@ -1,7 +1,5 @@
 package io.shine.cxxuhc.events;
 
-import java.util.Random;
-
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -11,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -20,7 +17,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import io.shine.cxxuhc.CXXUhc;
 import io.shine.cxxuhc.enums.GameState;
@@ -84,25 +81,23 @@ public class GameEvents implements Listener {
   public void onDeath(PlayerDeathEvent e) {
     if (e.getEntityType() == EntityType.PLAYER) {
       if (HostGame.getState() == GameState.START) {
-        e.getEntity().spigot().respawn();
         HostGame.getPlayers().remove(e.getEntity().getName());
         updateSB();
-        if (e.getEntity().getLastDamageCause().getCause() == DamageCause.ENTITY_ATTACK) {
-          if (e.getEntity().getKiller() != null) {
-            String name = e.getEntity().getKiller().getName();
-            ScoreboardSign sb = CXXUhc.INSTANCE.scoreboards.get(name);
-            if (HostGame.getKSHashMap().containsKey(name)) {
-              sb.setLine(9, "§cKill(s): §7" + (HostGame.getKS(name) + 1));
-            } else {
-              sb.setLine(9, "§cKill(s): §71");
-            }
-            HostGame.addKS(name);
+        e.setKeepInventory(false);
+        if (e.getEntity().getKiller() != null) {
+          String name = e.getEntity().getKiller().getName();
+          ScoreboardSign sb = CXXUhc.INSTANCE.scoreboards.get(name);
+          if (HostGame.getKSHashMap().containsKey(name)) {
+            sb.setLine(9, "§cKill(s): §7" + (HostGame.getKS(name) + 1));
+          } else {
+            sb.setLine(9, "§cKill(s): §71");
           }
+          HostGame.addKS(name);
         }
-        if (HostGame.getPlayers().size() == 1) {
-          Bukkit.getPluginManager()
-              .callEvent(new GameWinEvent(Bukkit.getWorld("uhcworld"), Bukkit.getPlayer(HostGame.getPlayers().get(0))));
-        }
+      }
+      if (HostGame.getPlayers().size() == 1) {
+        Bukkit.getPluginManager()
+            .callEvent(new GameWinEvent(Bukkit.getWorld("uhcworld"), Bukkit.getPlayer(HostGame.getPlayers().get(0))));
       }
     }
   }
@@ -110,12 +105,13 @@ public class GameEvents implements Listener {
   @EventHandler
   public void onRespawn(PlayerRespawnEvent e) {
     Player p = e.getPlayer();
+    System.out.println("Player respawning: " + e.getPlayer().getDisplayName());
     p.setGameMode(GameMode.SPECTATOR);
     if (p.getKiller() != null) {
-      p.teleport(p.getKiller());
+      e.setRespawnLocation(p.getKiller().getLocation());
       return;
     } else {
-      p.teleport(new Location(Bukkit.getWorld("uhcworld"), 0, 150, 0));
+      e.setRespawnLocation(new Location(Bukkit.getWorld("uhcworld"), 0, 150, 0));
       return;
     }
   }
@@ -167,8 +163,16 @@ public class GameEvents implements Listener {
 
   @EventHandler
   public void onMove(PlayerMoveEvent e) {
-    if ((e.getTo().getY() < 190.0d || e.getTo().getX() < 190.0d) && HostGame.getState() == GameState.TIMER) {
-      e.setCancelled(true);
+    if (HostGame.getState() == GameState.TIMER) {
+      String playername = e.getPlayer().getName();
+      double spawnX = CXXUhc.INSTANCE.spawns.get(playername).getX();
+      double spawnZ = CXXUhc.INSTANCE.spawns.get(playername).getZ();
+      double posX = e.getTo().getX();
+      double posZ = e.getTo().getZ();
+
+      if (evaluatePos(spawnX, posX) || evaluatePos(spawnZ, posZ)) {
+        e.setCancelled(true);
+      }
     }
   }
 
@@ -206,6 +210,10 @@ public class GameEvents implements Listener {
     HostGame.setNoDamage(true);
     p.setAllowFlight(true);
     p.setFlying(true);
+  }
+
+  public boolean evaluatePos(double spawn, double pos) {
+    return pos < spawn - 1 || pos > spawn + 1;
   }
 
 }

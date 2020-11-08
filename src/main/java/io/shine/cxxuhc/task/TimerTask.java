@@ -43,7 +43,7 @@ public class TimerTask {
         Bukkit.broadcastMessage("§9CXXUHC §7>> §fTéléportation des joueurs...");
         for (Player p : Bukkit.getOnlinePlayers()) {
           Location l = r.stream().findAny().get();
-          p.teleport(new Location(l.getWorld(), l.getX(), l.getY() + 3, l.getZ()));
+          p.teleport(new Location(l.getWorld(), l.getX(), l.getY() + 5, l.getZ()));
           p.setScoreboard(CXXUhc.sb);
           CXXUhc.INSTANCE.spawns.put(p.getName(), l);
           r.remove(l);
@@ -91,7 +91,7 @@ public class TimerTask {
     if (r.nextBoolean()) {
       z *= -1;
     }
-    Location l = new Location(Bukkit.getWorld("uhcworld"), (double) x, 200.0, (double) z);
+    Location l = new Location(Bukkit.getWorld("uhcworld"), (double) x + 0.5, 200.0, (double) z + 0.5);
     l.getChunk().load(true);
     l.getBlock().setType(Material.STAINED_GLASS);
     return l;

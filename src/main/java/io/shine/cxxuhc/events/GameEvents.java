@@ -1,6 +1,5 @@
 package io.shine.cxxuhc.events;
 
-
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -78,48 +77,41 @@ public class GameEvents implements Listener {
     }
   }
 
-@EventHandler
+  @EventHandler
   public void onDeath(PlayerDeathEvent e) {
     if (e.getEntityType() == EntityType.PLAYER) {
       if (HostGame.getState() == GameState.START) {
         HostGame.getPlayers().remove(e.getEntity().getName());
         updateSB();
         e.setKeepInventory(false);
-	      if (e.getEntity().getKiller() != null) {
-	        String name = e.getEntity().getKiller().getName();
-	        ScoreboardSign sb = CXXUhc.INSTANCE.scoreboards.get(name);
-	        if (HostGame.getKSHashMap().containsKey(name)) {
-	          sb.setLine(9, "§cKill(s): §7" + (HostGame.getKS(name) + 1));
-	        } else {
-	          sb.setLine(9, "§cKill(s): §71");
-	        }
-	        HostGame.addKS(name);
-	      }
-	    }
-	    if (HostGame.getPlayers().size() == 1 || HostGame.getPlayers().size() == 0) {
-	      Bukkit.getPluginManager()
-	          .callEvent(new GameWinEvent(Bukkit.getWorld("uhcworld"), Bukkit.getPlayer(HostGame.getPlayers().get(0))));
-	    }
-	    new BukkitRunnable() {
-
-			@Override
-			public void run() {
-				e.getEntity().spigot().respawn();
-			}
-	    	
-	    }.runTaskLaterAsynchronously(CXXUhc.INSTANCE, 40);
+        if (e.getEntity().getKiller() != null) {
+          String name = e.getEntity().getKiller().getName();
+          ScoreboardSign sb = CXXUhc.INSTANCE.scoreboards.get(name);
+          if (HostGame.getKSHashMap().containsKey(name)) {
+            sb.setLine(9, "§cKill(s): §7" + (HostGame.getKS(name) + 1));
+          } else {
+            sb.setLine(9, "§cKill(s): §71");
+          }
+          HostGame.addKS(name);
+        }
+      }
+      if (HostGame.getPlayers().size() == 1) {
+        Bukkit.getPluginManager()
+            .callEvent(new GameWinEvent(Bukkit.getWorld("uhcworld"), Bukkit.getPlayer(HostGame.getPlayers().get(0))));
+      }
     }
   }
 
   @EventHandler
   public void onRespawn(PlayerRespawnEvent e) {
     Player p = e.getPlayer();
+    System.out.println("Player respawning: " + e.getPlayer().getDisplayName());
     p.setGameMode(GameMode.SPECTATOR);
     if (p.getKiller() != null) {
-      p.teleport(p.getKiller());
+      e.setRespawnLocation(p.getKiller().getLocation());
       return;
     } else {
-      p.teleport(new Location(Bukkit.getWorld("uhcworld"), 0, 150, 0));
+      e.setRespawnLocation(new Location(Bukkit.getWorld("uhcworld"), 0, 150, 0));
       return;
     }
   }
@@ -172,12 +164,15 @@ public class GameEvents implements Listener {
   @EventHandler
   public void onMove(PlayerMoveEvent e) {
     if (HostGame.getState() == GameState.TIMER) {
-    	String playername = e.getPlayer().getName();
-    	double spawnX = CXXUhc.INSTANCE.spawns.get(playername).getX();
-    	double spawnZ = CXXUhc.INSTANCE.spawns.get(playername).getZ();
-    	if(evaluatePos(spawnX, e.getTo().getX()) || evaluatePos(spawnZ, e.getTo().getZ())) {
-    		e.setCancelled(true);
-    	}
+      String playername = e.getPlayer().getName();
+      double spawnX = CXXUhc.INSTANCE.spawns.get(playername).getX();
+      double spawnZ = CXXUhc.INSTANCE.spawns.get(playername).getZ();
+      double posX = e.getTo().getX();
+      double posZ = e.getTo().getZ();
+
+      if (evaluatePos(spawnX, posX) || evaluatePos(spawnZ, posZ)) {
+        e.setCancelled(true);
+      }
     }
   }
 
@@ -198,7 +193,7 @@ public class GameEvents implements Listener {
           p.getWorld().dropItemNaturally(p.getLocation(), itemStack);
         }
         updateSB();
-        if (HostGame.getPlayers().size() == 1 || HostGame.getPlayers().size() == 0) {
+        if (HostGame.getPlayers().size() == 1) {
           Bukkit.getPluginManager()
               .callEvent(new GameWinEvent(Bukkit.getWorld("uhcworld"), Bukkit.getPlayer(HostGame.getPlayers().get(0))));
         }
@@ -216,9 +211,9 @@ public class GameEvents implements Listener {
     p.setAllowFlight(true);
     p.setFlying(true);
   }
-  
+
   public boolean evaluatePos(double spawn, double pos) {
-	    return spawn < pos || spawn > pos;
+    return pos < spawn - 1 || pos > spawn + 1;
   }
 
 }

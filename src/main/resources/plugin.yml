@@ -9,7 +9,7 @@ commands:
         description: Finish
     bug:
         description: Report BUG
-    end:
+    enduhc:
         description: Ends the current UHC
     me:
         description: Me

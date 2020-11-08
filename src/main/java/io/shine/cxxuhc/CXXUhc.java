@@ -66,6 +66,7 @@ public class CXXUhc extends JavaPlugin {
     getCommand("say").setExecutor(new SayCommand());
     getCommand("bug").setExecutor(new BugCommand());
     getCommand("end").setExecutor(new EndCommand());
+    getCommand("me").setExecutor(new SayCommand());
   }
 
   public void registerEvents() {

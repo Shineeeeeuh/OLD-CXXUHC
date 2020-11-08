@@ -1,6 +1,5 @@
 package io.shine.cxxuhc.events;
 
-import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -11,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -20,7 +18,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import io.shine.cxxuhc.CXXUhc;
 import io.shine.cxxuhc.enums.GameState;
@@ -80,12 +78,13 @@ public class GameEvents implements Listener {
     }
   }
 
-  @EventHandler
+@EventHandler
   public void onDeath(PlayerDeathEvent e) {
     if (e.getEntityType() == EntityType.PLAYER) {
       if (HostGame.getState() == GameState.START) {
         HostGame.getPlayers().remove(e.getEntity().getName());
         updateSB();
+        e.setKeepInventory(false);
 	      if (e.getEntity().getKiller() != null) {
 	        String name = e.getEntity().getKiller().getName();
 	        ScoreboardSign sb = CXXUhc.INSTANCE.scoreboards.get(name);
@@ -97,10 +96,18 @@ public class GameEvents implements Listener {
 	        HostGame.addKS(name);
 	      }
 	    }
-	    if (HostGame.getPlayers().size() == 1) {
+	    if (HostGame.getPlayers().size() == 1 || HostGame.getPlayers().size() == 0) {
 	      Bukkit.getPluginManager()
 	          .callEvent(new GameWinEvent(Bukkit.getWorld("uhcworld"), Bukkit.getPlayer(HostGame.getPlayers().get(0))));
 	    }
+	    new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				e.getEntity().spigot().respawn();
+			}
+	    	
+	    }.runTaskLaterAsynchronously(CXXUhc.INSTANCE, 40);
     }
   }
 
@@ -186,7 +193,7 @@ public class GameEvents implements Listener {
           p.getWorld().dropItemNaturally(p.getLocation(), itemStack);
         }
         updateSB();
-        if (HostGame.getPlayers().size() == 1) {
+        if (HostGame.getPlayers().size() == 1 || HostGame.getPlayers().size() == 0) {
           Bukkit.getPluginManager()
               .callEvent(new GameWinEvent(Bukkit.getWorld("uhcworld"), Bukkit.getPlayer(HostGame.getPlayers().get(0))));
         }

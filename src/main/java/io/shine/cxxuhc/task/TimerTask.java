@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -35,6 +36,11 @@ public class TimerTask {
       r.add(l);
       CXXUhc.INSTANCE.lbtp.add(l);
     }
+
+    for (Chunk c : CXXUhc.chunkSet) {
+      c.load();
+    }
+
     Bukkit.getScheduler().scheduleAsyncDelayedTask(pl, new BukkitRunnable() {
 
       @Override

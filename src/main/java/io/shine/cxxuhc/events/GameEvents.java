@@ -16,6 +16,7 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -173,6 +174,14 @@ public class GameEvents implements Listener {
       if (evaluatePos(spawnX, posX) || evaluatePos(spawnZ, posZ)) {
         e.setCancelled(true);
       }
+    }
+  }
+
+  @EventHandler
+  public void onChunkUnload(ChunkUnloadEvent event) {
+    if (HostGame.getState() == GameState.TIMER) {
+      System.out.println("Cancelled chunk unloading " + event.getChunk().getX() + ":" + event.getChunk().getZ());
+      event.setCancelled(true);
     }
   }
 

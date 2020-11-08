@@ -3,12 +3,14 @@ package io.shine.cxxuhc.utils;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -26,7 +28,7 @@ public class WorldGeneration {
   private static int cx;
   private static int cy;
 
-  public static void generateMap() {
+  public static HashSet<Chunk> generateMap() {
 
     Field biomesField = null;
     try {
@@ -56,46 +58,46 @@ public class WorldGeneration {
     }
 
     String worldname = "uhcworld";
-    World w = Bukkit.createWorld(new WorldCreator(worldname));
-    w.setGameRuleValue("naturalRegeneration", "false");
-    World nw = Bukkit.createWorld(new WorldCreator(worldname + "_nether").environment(Environment.NETHER));
-    nw.setGameRuleValue("naturalRegeneration", "false");
-    int cr = (100 / 16) + 4;
-    cx = -1 * cr;
-    cy = -1 * cr;
-    CompletableFuture<BukkitTask> t = new CompletableFuture<>();
-    t.complete(Bukkit.getScheduler().runTaskTimer(CXXUhc.INSTANCE, () -> {
-      for (int i = 0; i < 25; ++i) {
-        w.loadChunk(cx, cy);
-        w.unloadChunk(cx, cy);
-        if (cx == cr && cy == cr) {
-          try {
-            HostGame.setState(GameState.WAITING);
-            setSpwanPlat("uhcworld");
-            WorldBorder wb = w.getWorldBorder();
-            wb.setCenter(0, 0);
-            wb.setSize(1000);
-            wb.setDamageAmount(0.5);
-            wb.setDamageBuffer(5.0);
-            wb.setWarningDistance(20);
-            WorldBorder nb = nw.getWorldBorder();
-            nb.setCenter(0, 0);
-            nb.setSize(1000);
-            nb.setDamageAmount(0.5);
-            nb.setDamageBuffer(5.0);
-            nb.setWarningDistance(20);
-            t.get().cancel();
-          } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-          }
-        } else if (cx == cr) {
-          cx = -1 * cr;
-          cy++;
-        } else {
-          cx++;
-        }
+    World world = Bukkit.createWorld(new WorldCreator(worldname));
+    world.setGameRuleValue("naturalRegeneration", "false");
+    World nether = Bukkit.createWorld(new WorldCreator(worldname + "_nether").environment(Environment.NETHER));
+    nether.setGameRuleValue("naturalRegeneration", "false");
+
+    int worldSize = 512;
+
+    HashSet<Chunk> chunkSet = new HashSet<>();
+
+    for (int x = 0; x < worldSize / 2; x += 16) {
+      for (int z = 0; z < worldSize / 2; z += 16) {
+        chunkSet.add(world.getChunkAt(x, z));
+        world.loadChunk(x, z);
+        chunkSet.add(world.getChunkAt(-x, -z));
+        world.loadChunk(-x, -z);
+        chunkSet.add(world.getChunkAt(-x, z));
+        world.loadChunk(-x, z);
+        chunkSet.add(world.getChunkAt(x, -z));
+        world.loadChunk(x, -z);
       }
-    }, 0, 1));
+    }
+
+    HostGame.setState(GameState.WAITING);
+    setSpwanPlat("uhcworld");
+
+    WorldBorder worldborder = world.getWorldBorder();
+    worldborder.setCenter(0, 0);
+    worldborder.setSize(1000);
+    worldborder.setDamageAmount(0.5);
+    worldborder.setDamageBuffer(5.0);
+    worldborder.setWarningDistance(20);
+
+    WorldBorder netherworldborder = nether.getWorldBorder();
+    netherworldborder.setCenter(0, 0);
+    netherworldborder.setSize(1000);
+    netherworldborder.setDamageAmount(0.5);
+    netherworldborder.setDamageBuffer(5.0);
+    netherworldborder.setWarningDistance(20);
+
+    return chunkSet;
   }
 
   @SuppressWarnings("deprecation")

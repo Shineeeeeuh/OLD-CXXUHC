@@ -172,7 +172,10 @@ public class GameEvents implements Listener {
   @EventHandler
   public void onMove(PlayerMoveEvent e) {
     if (HostGame.getState() == GameState.TIMER) {
-    	if(e.getTo().getX() != CXXUhc.INSTANCE.spawns.get(e.getPlayer().getName()).getX()) {
+    	String playername = e.getPlayer().getName();
+    	double spawnX = CXXUhc.INSTANCE.spawns.get(playername).getX();
+    	double spawnZ = CXXUhc.INSTANCE.spawns.get(playername).getZ();
+    	if(evaluatePos(spawnX, e.getTo().getX()) || evaluatePos(spawnZ, e.getTo().getZ())) {
     		e.setCancelled(true);
     	}
     }
@@ -212,6 +215,10 @@ public class GameEvents implements Listener {
     HostGame.setNoDamage(true);
     p.setAllowFlight(true);
     p.setFlying(true);
+  }
+  
+  public boolean evaluatePos(double spawn, double pos) {
+	    return spawn < pos || spawn > pos;
   }
 
 }

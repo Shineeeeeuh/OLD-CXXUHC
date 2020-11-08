@@ -171,8 +171,10 @@ public class GameEvents implements Listener {
 
   @EventHandler
   public void onMove(PlayerMoveEvent e) {
-    if ((e.getTo().getY() < 190.0d || e.getTo().getX() < 190.0d) && HostGame.getState() == GameState.TIMER) {
-      e.setCancelled(true);
+    if (HostGame.getState() == GameState.TIMER) {
+    	if(e.getTo().getX() != CXXUhc.INSTANCE.spawns.get(e.getPlayer().getName()).getX()) {
+    		e.setCancelled(true);
+    	}
     }
   }
 

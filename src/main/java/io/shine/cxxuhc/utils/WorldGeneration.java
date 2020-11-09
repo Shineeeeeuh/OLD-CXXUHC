@@ -63,7 +63,7 @@ public class WorldGeneration {
     World nether = Bukkit.createWorld(new WorldCreator(worldname + "_nether").environment(Environment.NETHER));
     nether.setGameRuleValue("naturalRegeneration", "false");
 
-    int worldSize = 512;
+    int worldSize = 1024;
 
     HashSet<Chunk> chunkSet = new HashSet<>();
 
